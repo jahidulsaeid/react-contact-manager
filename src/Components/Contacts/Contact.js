@@ -1,25 +1,32 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import 'semantic-ui-css/semantic.min.css';
-import PropTypes from 'prop-types'
-import { Consumer } from '../../Context'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types';
+import { Consumer } from '../../Context';
+import axios from 'axios';
 
 class Contact extends Component {
     state = {
         showContactInfo: false
     };
-    onDeleteClick = (id, dispatch) => {
-        dispatch({type:'DELETE_CONTACT',payload:id});
+
+
+    onDeleteClick = async (id, dispatch) => {
+        await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
+        dispatch({ type: 'DELETE_CONTACT', payload: id });
     };
+
+
     render() {
-        const {id, name, email, phone } = this.props.contact;
+        const { id, name, email, phone } = this.props.contact;
         const { showContactInfo } = this.state;
         return (
 
             <Consumer>
                 {value => {
-                    const {dispatch} = value;
+                    const { dispatch } = value;
                     return (
-                        <div className="contact" style={{width:'600px',margin:'auto'}}>
+                        <div className="contact" style={{ width: '600px', margin: 'auto' }}>
                             <div className="ui card fluid">
                                 <div className="content">
                                     <div className="header" >
@@ -31,7 +38,19 @@ class Contact extends Component {
                                             })}
 
                                         ></i>
+
+
                                         <i className="x icon ui right floated red" onClick={this.onDeleteClick.bind(this, id, dispatch)}></i>
+
+
+                                        
+                                        <Link to={`contact/edit/${id}`}>
+                                            <i className="pencil right floated alternate icon"
+                                            style={{color:'black',cursor:'pointer',margin:'0 20px',fontSize:'14px'}}
+                                            ></i>
+                                        </Link>
+
+
                                     </div>
                                     {showContactInfo ? (<div className="ui relaxed divided list">
                                         <div className="item">

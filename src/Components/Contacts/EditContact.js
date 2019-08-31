@@ -4,13 +4,23 @@ import { Consumer } from '../../Context'
 import TextInputField from '../Layout/TextInputField'
 import axios from 'axios';
 
-export class AddContact extends Component {
+export class EditContact extends Component {
     state = {
         name: '',
         email: '',
         phone: '',
         errors: ''
     };
+    async componentDidMount(){
+        const { id }  = this.props.match.params;
+        const res =await axios.get(`https://jsonplaceholder.typicode.com/users/${id}`);
+        const contact = res.data;
+        this.setState({
+            name:contact.name,
+            email:contact.email,
+            phone:contact.phone
+        })
+    }
     onChange = e => this.setState({ [e.target.name]: e.target.value });
     onSubmit = async (dispatch, e) => {
         e.preventDefault();
@@ -30,18 +40,18 @@ export class AddContact extends Component {
             this.setState({errors: {phone: 'Phone is required'}});
             return;
         }
+        
 
-
-        const newContact = {
-            // id: uuid(),
+        const updContact ={
             name,
             email,
             phone
-        };
+        }
+        const { id } = this.props.match.params;
 
-       const res = await axios.post('https://jsonplaceholder.typicode.com/users',newContact);
-        dispatch({ type: 'ADD_CONTACT', payload: res.data });
-        
+        const res = await  axios.put(`https://jsonplaceholder.typicode.com/users/${id}`,updContact);
+
+        dispatch({type:'UPDATE_CONTACT',payload:res.data})
 
         this.setState({
             name: '',
@@ -62,7 +72,7 @@ export class AddContact extends Component {
                         <div className="ui grid centered" style={{ margin: '20px 0' }}>
 
                             <form className="ui form eight wide column card fluid" onSubmit={this.onSubmit.bind(this, dispatch)}>
-                                <h1 style={{ textAlign: 'center' }}>Add Contact</h1>
+                                <h1 style={{ textAlign: 'center' }}>Edit Contact</h1>
 
                                 <TextInputField
                                     name="name"
@@ -86,7 +96,7 @@ export class AddContact extends Component {
                                     onChange={this.onChange}
                                     error={errors.phone}
                                 />
-                                <button className="ui button primary centered" type="submit">Add Contact</button>
+                                <button className="ui button primary centered" type="submit">Update Contact</button>
                             </form>
 
                         </div>
@@ -97,4 +107,4 @@ export class AddContact extends Component {
     }
 }
 
-export default AddContact
+export default EditContact
