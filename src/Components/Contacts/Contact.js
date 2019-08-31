@@ -19,9 +19,8 @@ class Contact extends Component {
                 {value => {
                     const {dispatch} = value;
                     return (
-                        <div className="contact">
+                        <div className="contact" style={{width:'600px',margin:'auto'}}>
                             <div className="ui card fluid">
-
                                 <div className="content">
                                     <div className="header" >
                                         {name}{' '}
